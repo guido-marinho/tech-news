@@ -1,16 +1,50 @@
-# Requisito 7
+from tech_news.database import db
+from datetime import datetime
+
+
+def date_format(date):
+    try:
+        date_converted = datetime.strptime(date, "%Y-%m-%d")
+        return date_converted.strftime("%d/%m/%Y")
+    except ValueError:
+        raise ValueError("Data inválida")
+
+
 def search_by_title(title):
-    """Seu código deve vir aqui"""
-    raise NotImplementedError
+    try:
+        query = db.news.find(
+            {"title": {"$regex": title, "$options": "i"}},
+            projection=["title", "url"],
+        )
+
+        return [(item["title"], item["url"]) for item in query]
+
+    except Exception as error:
+        raise error
 
 
-# Requisito 8
 def search_by_date(date):
-    """Seu código deve vir aqui"""
-    raise NotImplementedError
+    date_formated = date_format(date)
+
+    try:
+        query = db.news.find(
+            {"timestamp": date_formated},
+            projection=["title", "url"],
+        )
+
+        return [(item["title"], item["url"]) for item in query]
+    except Exception as error:
+        raise error
 
 
-# Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
-    raise NotImplementedError
+    try:
+        query = db.news.find(
+            {"category": {"$regex": category, "$options": "i"}},
+            projection=["title", "url"],
+        )
+
+        return [(item["title"], item["url"]) for item in query]
+
+    except Exception as error:
+        raise error
